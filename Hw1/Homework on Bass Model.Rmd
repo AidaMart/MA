@@ -1,0 +1,276 @@
+---
+title: "Homework 1 on Bass Model"
+author: "Aida Martirosyan"
+date: "2023-09-28"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readxl)
+```
+
+```{r, results=FALSE, echo=FALSE}
+# Load necessary libraries
+libs <- c('ggplot2','ggpubr','knitr','diffusion')
+
+load_libraries<-function(libs){
+  new_libs <- libs[!(libs %in% installed.packages()[,"Package"])] 
+  if(length(new_libs)>0) {
+    install.packages(new_libs)
+    } 
+  lapply(libs, library, character.only = TRUE)
+}
+
+load_libraries(libs)
+```
+
+# Introduction
+\vspace{10px}
+This markdown file is for the *Homework 1 of the Marketing Analytics - Fall 2023*
+course. The goal of the homework is to use Bass Model, which is a technique to 
+estimate Market Entry activities. For example, if someone wants to create new 
+product, but has no financial resources to explore market, it is a good choice 
+to use Bass Model to estimate market potential and number of adopters of the new 
+product over time. The main steps of using the model includes choosing new 
+innovation, then find look-alike product from the past, estimate innovation and 
+imitation rates (p,q). In next steps each part of the assignment will be 
+implemented and explained with visuals and texts.
+
+
+# Step 1: Innovation selection
+\vspace{10px}
+I visited TIME magazine to choose one of the interesting innovations of the year.
+As I am very interested in AI and Robotics, I found a product which attracted me
+a lot. The product name is **An AI 3D Printer: Bambu Lab X1 3D Printer**. Now there
+are many 3D printers in the world, but the mentioned product is different from 
+existing ones as it provides magical improvements to users due to its AI powered
+system. It is possible to print in sixteen various colors with this product twice 
+as fast as existing printers. Another advancement is that users can control the 
+AI 3D Printer with its mobile app remotely. To create the innovation it took 
+approximately two years from founders, but as a result the product idea became 
+very popular and successful. 
+
+
+# Step 2: Look-alike Innovation selection
+\vspace{10px}
+The first thing that came to my mind thinking about look-alike innovation from 
+past for AI 3D Printer, of course, are the usual printers that use paper to 
+print and create contexts. I did research to collect information about history 
+of printers. Here are some points that I underlined:
+\vspace{10px}
+
+* Printing is very old, during 3500 BC, people used cylinder seals to certify 
+documents. Next comes woodblock printing, during which people used wood blocks
+with specific designs to press onto paper.
+* In the 19th century, Charles Babbage designed the first computer printer. 
+However, this mechanical printer became available in 2000 by the Science Museum 
+in London.
+* In 1968 Japanese company Epson created first electronic printer, EP-101.
+* In 1969 Gary Starkweather, an engineer at Xerox invented the first laser 
+printer.
+
+\vspace{10px}
+I selected the **Laser Printers** as a look-alike innovation from past for AI 3D 
+Printer Innovation. First laser printers, Xerox 9700 were introduced by Xerox 
+company. Laser printers after short time became popular and widely
+used by people as they were providing speed, high quality and high-volume results.
+The printers used laser beam to print text and graphics on paper. There are some 
+types of laser printers. One type includes the printers which can only print in
+white and black, there are also colorful printers which can print in four colors: 
+cyan, magenta, yellow, black. However, during time, as technologies evolve, emails
+and e-books became highly used by people, the usage of printers declined. And here
+comes my selection of the first step, AI 3D Printer, which presents 3D modeling 
+that is the next stage for laser printers. Using similar technique as laser 
+printers, 3D printers give chance users to create physical objects. In case of 
+AI 3D Printer, it provides further advantages, including twice faster speed, 16
+colors and remote control over the system, which proves that this product is
+real improvement of past laser printers.
+
+
+# Step 3: Look-alike Innovation Sales dataset extraction
+\vspace{10px}
+In this stage I tried to search some datasets of laser printers in the website
+statista. After the research I found out that there are no appropriate data for
+some specific types of printers or specific company's printers in the website. 
+Then I decided not to focus on some specific company product but try to find 
+general sales dataset of printers of some country. 
+
+\vspace{10px}
+I separated three possible choices for data. The first one was good as it included 
+longer period of time series with which will be more interesting to work,
+however the sales included not only printers but also scanners and multifunctional 
+devices. So, considering that my target was printers I avoided this data. The 
+second possible data was showing Samsung's laser printer sales, which was 
+appropriate for my case, however as data included short period I also avoided this 
+one. Finally, I chose the dataset that included the number of printers sold in 
+Brazil between 2014 and 2020. 
+
+The selected dataset is also good one, as it shows yearly printers sales in
+million units. Of course, the data is not worldwide, but it gives local 
+information about printer sales in Brazil.
+
+
+# Step 4: Bass model parameters estimation
+\vspace{10px}
+Here is what the data looks like; the printer sales in million units are shown 
+from 2014 to 2020 in Brazil:
+```{r, echo=FALSE}
+excel_file_path <- "printer-unit-sales-in-brazil-2014-2020.xlsx"
+sheet_name <- "Data"
+data <- read_excel(excel_file_path, sheet = sheet_name)
+
+kable(data)
+```
+
+\newpage
+Here is the barplot of the sales:
+\vspace{10px}
+
+
+```{r, echo=FALSE}
+sales = ggplot(data, aes(x = Year, y = Sales)) + geom_bar(stat='identity') +
+labs(title = 'Yearly printer sales in Brazil', y = 'Sales (in million units)')
+print(sales)
+```
+
+
+\vspace{10px}
+Let us use diffusion library to estimate Bass model parameters:
+\vspace{10px}
+
+```{r, echo=FALSE}
+diff_m = diffusion(data$Sales)
+p_estimated=round(diff_m$w,4)[1]
+q_estimated=round(diff_m$w,4)[2]
+m=round(diff_m$w,4)[3]
+print(diff_m)
+```
+*Coefficient of innovation(p)* is approximately 0.05. This shows the rate by which
+new users or innovators adopt the innovation. Innovators are people who are ready 
+to buy the product by just knowing about the product from advertisements or 
+product info.
+
+*Coefficient of imitation(q)* is 0. This shows the rate by which imitators adopt
+the innovation. In our case as it is 0, it means we do not have imitators in the
+model, which is not good. Imitators are people who start buying the product by
+seeing others experiments with the product.
+
+*Market potential(m)* shows the total number of people that can buy the product, 
+aka number of adopters in the market.
+
+I am going to use the above estimated parameters during next steps...
+
+
+\vspace{10px}
+Modeling f(t) - the fraction of the total market that adopts at time t and F(t) 
+- the fraction of the total market that has adopted up to and including time t:
+\vspace{10px}
+
+```{r, echo=FALSE}
+# Define functions for f (t) and F(t):
+bass.f <- function(t, p, q) {
+  ((p + q)**2 / p) * exp(- (p + q) * t) / (1 + (q / p) * exp(- (p + q) * t))**2
+}
+
+bass.F <- function(t,p,q){ (1-exp(-(p+q)*t))/
+    (1+(q/p)*exp(-(p+q)*t))
+}
+```
+
+```{r, echo=FALSE}
+ cum_ad1 = ggplot(data.frame(t = c(1, 7)), aes(t)) +
+  stat_function(fun = bass.F, args = c(p=0.0523, q=0)) +
+  labs(title = 'Printers - cumulative adoptions')
+
+time_ad1 = ggplot(data.frame(t = c(1, 7)), aes(t)) +
+  stat_function(fun = bass.f, args = c(p=0.0523, q=0)) +
+  labs(title = 'Printers - adoptions at time t')
+
+ggarrange(cum_ad1, time_ad1)
+```
+
+\newpage
+Visualizing f(t):
+\vspace{10px}
+
+```{r, echo=FALSE}
+time_ad =  ggplot(data.frame(t = c(1:7)), aes(t)) +
+  stat_function(fun = bass.f, args = c(p=0.0523, q=0)) +
+  labs(title = 'f(t)')
+sm_sales = ggplot(data, aes(x = Year, y = Sales)) +
+  geom_bar(stat = 'identity') +
+  ggtitle('Printer sales, mln units')
+ggarrange(time_ad, sm_sales)
+```
+\vspace{10px}
+As we can see the estimation is not as good, yes it grasped the main trend, 
+however it is not showing minor fluctuations of the barplot.
+
+\newpage
+# Step 5: Predictions of the diffusion of the innovation
+
+Making predictions by multiplying f (t) by m:
+\vspace{10px}
+
+```{r, echo=FALSE}
+data$pred_sales = bass.f(1:7, p = 0.0523, q = 0)*53.8462
+ggplot(data, aes(x = Year, y = Sales)) +
+  geom_bar(stat = 'identity') +
+  geom_point(mapping = aes(x=Year, y=pred_sales), color = 'red')
+```
+As we can see from above prediction results, they are rather good. The red points 
+are close to the peaks of bars. Of course, result is not perfect, but is not
+very bad too.
+
+# Step 6: Potential market share estimation using Fermi's logic
+
+
+Now let us try to estimate the number of adopters for AI 3D Printer product
+worldwide. I will use Fermi estimation, which is a method by which one can 
+approximately estimate potential market for products. To do estimation for my 
+selected product, I will consider the following facts:
+
+* The world population is approximately 8 billion.
+* Mainly the target market will include industries and professionals from fields
+like design, technology and manufacturing. There are globally 507K graphic 
+designers, 300 million employees in Manufacturing sector. As there was no 
+specific number of employees of IT field, I will take approximately 250 million
+employees. Of, course the numbers are approximated as even numbers taken from the 
+Internet do not include all the employees. So, we can approximately say that our
+target market is 10% of whole population.
+
+```{r, echo=FALSE, results=FALSE}
+# calculating the number of employees in manufacturing sector
+3540000 + 7911000 + 4090000 + 5012000 + 4499000 + 128869000 + 10958000 + 9154000 +
+10260000 + 16363000 + 612000 + 3396000 + 2332000 + 10388000 + 57244000 +
+16381000 + 898000 + 3069000 
+```
+* We should consider that from the above mentioned professionals, only the ones
+will buy the product which have the resources and need to create AI based 3D 
+objects. I think from the beginning their number will not be so high, as the
+prices will be high, however let us consider that 5% of them will adopt the
+product.
+* So final estimate for AI 3D Printer adopters (m) will be equal to 8 bilion's 10 
+percent and then its 5 percent: 40 million people. 
+
+
+\newpage
+# Sources
+
+* TIME magazine. *An AI 3D Printer*. (2022). Retrieved from: https://time.com/collection/best-inventions-2022/6226978/bambu-lab-x1-3d-printer/
+* GSM BARCODING. *THE HISTORY OF PRINTERS *. (2020). Retrieved from:https://www.barcoding.co.uk/history-of-printers/#:~:text=The%20first%20electronic%20printer%20was,Epson%20(Shinshu%20Seiki%20Co.)
+* hc. *Laser Printer*. (2023). Retrieved from: https://history-computer.com/laser-printer/
+* statista. *Number of printers sold in Brazil from 2014 to 2020*. (2021). 
+Retrieved from: https://www.statista.com/statistics/863044/brazil-printer-unit-sales/
+* World Population Review. *World Population by Country 2023*. (2023). 
+Retrieved from: https://worldpopulationreview.com
+* colorlib. *Graphic Design Statistics*. (2023). 
+Retrieved from: https://colorlib.com/wp/graphic-design-statistics/
+* BROOKINGS. *Global manufacturing scorecard*. (2018). 
+Retrieved from: 
+https://www.brookings.edu/articles/global-manufacturing-scorecard-how-the-us-compares-to-18-other-nations/
+
+
