@@ -1,6 +1,6 @@
 # Marketing-Analytics-Fall-2023-course-Homework Repository
 
-This repository is dedicated to the homework submissions for the Marketing Analytics course.
+This repository is dedicated to the homework submissions for the Marketing Analytics course. Below, you can find descriptions of each homework. Besides the general explanations, you can find each assignment's full requirements in the corresponding folder.
 
 Homework 1: Bass Model - Estimating Market Entry Activities
 
@@ -20,6 +20,7 @@ Homework 2: A/B Testing
 Overview:
 Homework 2 focuses on A/B testing, a fundamental technique for evaluating the impact of changes to a website, app, or other user experiences. A/B testing allows you to assess the performance of two versions (A and B) and determine which one is more effective in achieving your objectives.
 
+Key Steps:
 
-This assignment will provide you with hands-on experience in designing and conducting A/B tests, and interpreting the results to make data-driven decisions. Here two main algorithms are implemented: Epsilon Greedy and Thompson Sampling.
+In Homework 2, you'll study A/B testing using Epsilon Greedy and Thompson Sampling algorithms. Your task is to design an experiment comparing the performance of four advertisement options represented as "bandits." A Bandit class has been provided as a foundation, with specific requirements to maintain. You must create EpsilonGreedy() and ThompsonSampling() classes and methods inherited from the Bandit() class. For Epsilon Greedy, you'll implement epsilon decay and design the experiment, while Thompson Sampling will be designed with known precision. The report should include visualizations of the learning process for each algorithm, cumulative rewards, storage of rewards in a CSV file with Bandit, Reward, and Algorithm details, as well as the printing of cumulative rewards and regret. This homework offers hands-on experience with bandit algorithms and A/B testing, providing valuable insights into their practical applications.
 
