@@ -2,7 +2,7 @@
 
 This repository is dedicated to the homework submissions for the Marketing Analytics course. Below, you can find descriptions of each homework. Besides the general explanations, you can find each assignment's full requirements in the corresponding folder.
 
-Homework 1: Bass Model - Estimating Market Entry Activities
+Homework 1: Bass Model 
 
 Overview:
 The goal of Homework 1 is to explore the application of the Bass Model in estimating market entry activities. The Bass Model is a powerful technique used to assess the potential market and the number of adopters for a new product over time. It becomes particularly valuable when financial resources for market exploration are limited.
